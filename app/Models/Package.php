@@ -14,7 +14,8 @@ class Package extends Model
         'max_person',
         'price_monday_to_thursday',
         'price_friday_to_sunday',
-        'cottage_id'
+        'cottage_id',
+        'img'
     ];
 
     public function cottages()

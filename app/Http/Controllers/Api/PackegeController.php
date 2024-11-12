@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Package;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class PackegeController extends Controller
@@ -51,13 +52,21 @@ class PackegeController extends Controller
             'max_person' => 'required|integer',
             'price_monday_to_thursday' => 'required|numeric',
             'price_friday_to_sunday' => 'required|numeric',
-            'cottage_ids' => 'array',
-            'cottage_ids.*' => 'exists:cottages,id',
+            // 'cottage_ids' => 'array',
+            // 'cottage_ids.*' => 'exists:cottages,id',
         ]);
-
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
+
+        if ($request->hasFile("img")) {
+            if ($package->img) {
+                Storage::delete($package->img);
+            }
+            $path = Storage::putFile("packages", $request->file("img"));
+            $request->request->add(["img" => "storage/" . $path]);
+        }
+
 
         $package->update($request->all());
 

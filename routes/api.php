@@ -43,6 +43,7 @@ Route::group([
     Route::resource('/opinion', OpinionController::class);
 
     Route::resource('/packages', PackegeController::class);
+    Route::post('/packages-admin/{id}', [PackegeController::class, "update"]);
 });
 Route::group([
     'middleware' => ['api', 'auth:api']
@@ -52,6 +53,7 @@ Route::group([
     Route::resource('/users-admin', UserController::class);
     Route::resource('/reservation-admin', ReservationController::class);
     Route::resource('/packages-admin', PackegeController::class);
+    // Route::post('/packages-admin/{id}', [PackegeController::class, "update"]);
     //api descuentos
     //  Route::resource('/discount', DiscountController::class);
     //  //api promociones
