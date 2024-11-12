@@ -70,4 +70,5 @@ class ReservationController extends Controller
             'reservation' => $reservation
         ], 201);
     }
+    
 }

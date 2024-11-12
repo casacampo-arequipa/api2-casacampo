@@ -51,6 +51,7 @@ Route::group([
     Route::resource('/cottage-admin', CottageController::class);
     Route::resource('/users-admin', UserController::class);
     Route::resource('/reservation-admin', ReservationController::class);
+    Route::resource('/packages-admin', PackegeController::class);
     //api descuentos
     //  Route::resource('/discount', DiscountController::class);
     //  //api promociones
