@@ -12,7 +12,10 @@ class PackegeController extends Controller
 {
     public function index()
     {
-        $packeges = Package::all();
+        $packeges = Package::all()->map(function ($package) {
+            $package->img = env("APP_URL") . '/' . $package->img;
+            return $package;
+        });
         return response()->json(['packeges' => $packeges], 200);
     }
 
@@ -25,12 +28,15 @@ class PackegeController extends Controller
             'max_person' => 'required|integer',
             'price_monday_to_thursday' => 'required|numeric',
             'price_friday_to_sunday' => 'required|numeric',
-            'cottage_ids' => 'array',
-            'cottage_ids.*' => 'exists:cottages,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
+        }
+        if ($request->hasFile("imagen")) {
+
+            $path = Storage::putFile("packages", $request->file("imagen"));
+            $request->request->add(["img" => "storage/" . $path]);
         }
 
         $package = Package::create($request->all());
@@ -59,11 +65,11 @@ class PackegeController extends Controller
             return response()->json($validator->errors()->toJson(), 400);
         }
 
-        if ($request->hasFile("img")) {
+        if ($request->hasFile("imagen")) {
             if ($package->img) {
                 Storage::delete($package->img);
             }
-            $path = Storage::putFile("packages", $request->file("img"));
+            $path = Storage::putFile("packages", $request->file("imagen"));
             $request->request->add(["img" => "storage/" . $path]);
         }
 
@@ -75,7 +81,18 @@ class PackegeController extends Controller
             $package->cottages()->sync($request->input('cottage_ids'));
         }
 
-        return response()->json(['message' => 'Package updated successfully', 'package' => $package]);
+        return response()->json([
+            'message' => 'Package updated successfully',
+            'package' => [
+                'id' => $package->id,
+                'name' => $package->name,
+                'description' => $package->description,
+                'max_person' => $package->max_person,
+                'price_monday_to_thursday' => $package->price_monday_to_thursday,
+                'price_friday_to_sunday' => $package->price_friday_to_sunday,
+                'img' => env("APP_URL") . "storage/" .  $package->img, // URL completa de la imagen
+            ]
+        ]);
     }
 
     public function destroy($id)

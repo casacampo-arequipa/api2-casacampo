@@ -22,7 +22,6 @@ class CottageController extends Controller
         $validator = Validator::make(request()->all(), [
             'name_cottage' => 'required',
             'description' => 'required',
-            'price' => 'required',
             'capacity' => 'required',
             'availability' => 'required',
             'rooms' => 'required',
@@ -37,5 +36,35 @@ class CottageController extends Controller
         $cottage = Cottage::create($request->all());
 
         return response()->json(["cottage" => $cottage]);
+    }
+    public function update(Request $request, int $id)
+    {
+        $cottage = Cottage::findOrFail($id);
+
+        $validator = Validator::make(request()->all(), [
+            'name_cottage' => 'required',
+            'description' => 'required',
+            'capacity' => 'required',
+            'availability' => 'required',
+            'rooms' => 'required',
+            'beds' => 'required',
+            'bathrooms' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $cottage->update($request->all());
+
+        return response()->json(["cottage" => $cottage]);
+    }
+
+    public function destroy($id)
+    {
+        $package = Cottage::findOrFail($id);
+        $package->delete();
+
+        return response()->json(['message' => 'Cottage deleted successfully']);
     }
 }

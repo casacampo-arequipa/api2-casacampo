@@ -19,7 +19,7 @@ class CottageFactory extends Factory
         return [
             'name_cottage' => fake()->words(3, true),
             'description' => fake()->sentence(),
-            'price' => fake()->randomFloat(2, 50, 500), // Precio entre 50 y 500 con 2 decimales
+            // 'price' => fake()->randomFloat(2, 50, 500), // Precio entre 50 y 500 con 2 decimales
             'capacity' => fake()->numberBetween(1, 10),
             'availability' => fake()->boolean(),
             'rooms' => fake()->numberBetween(1, 5), 

@@ -11,7 +11,6 @@ class Cottage extends Model
     protected $fillable = [
         'name_cottage',
         'description',
-        'price',
         'capacity',
         'availability',
         'rooms',

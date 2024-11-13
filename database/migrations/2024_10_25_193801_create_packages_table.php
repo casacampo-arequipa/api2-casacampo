@@ -19,6 +19,9 @@ return new class extends Migration
             $table->integer('max_person');
             $table->decimal('price_monday_to_thursday', 10, 2);
             $table->decimal('price_friday_to_sunday', 10, 2);
+            $table->decimal('guarantee', 10, 2);
+            $table->decimal('cleaning', 10, 2);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
