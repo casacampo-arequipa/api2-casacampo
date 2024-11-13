@@ -18,6 +18,10 @@ class Cottage extends Model
         'bathrooms'
     ];
 
+    public function packages()
+    {
+        return $this->belongsToMany(Package::class, 'cottage_packages');
+    }
     public function reservations()
     {
         return $this->belongsToMany(Package::class, 'cottage_reservation');  // Una cabaña puede estar asociada a muchas reservas

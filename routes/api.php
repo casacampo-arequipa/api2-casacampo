@@ -32,7 +32,7 @@ Route::group([
     'middleware' => ['api']
 ], function ($router) {
     //api cabañas
-    Route::resource('/cottage', CottageController::class);
+    Route::get('/cottage', [CottageController::class, "index"]);
     //api descuentos
     Route::resource('/discount', DiscountController::class);
     //api promociones
