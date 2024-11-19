@@ -50,6 +50,7 @@ Route::group([
     //api cabañas
     Route::resource('/cottage-admin', CottageController::class);
     Route::resource('/users-admin', UserController::class);
+    Route::get('/reservation-admin/helps', [ReservationController::class, 'helps']);
     Route::resource('/reservation-admin', ReservationController::class);
     Route::resource('/packages-admin', PackegeController::class);
     Route::post('/packages-admin/{id}', [PackegeController::class, "update"]);

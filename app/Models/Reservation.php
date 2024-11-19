@@ -11,9 +11,9 @@ class Reservation extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
-        'cottage_id',
         'discount_id',
         'promotion_id',
+        'package_id',
         'date_start',
         'date_end',
         'total_price',
@@ -37,11 +37,15 @@ class Reservation extends Model
     {
         return $this->belongsTo(User::class);  // Una reserva pertenece a un usuario
     }
+    public function package()
+    {
+        return $this->belongsTo(Package::class);
+    }
 
     // Relación con la cabaña
     public function cottages()
     {
-        return $this->belongsToMany(Cottage::class);  // Una reserva está asociada a una cabaña
+        return $this->belongsToMany(Cottage::class, 'cottage_reservation');
     }
 
     // Relación con el descuento
@@ -59,9 +63,5 @@ class Reservation extends Model
     public function opinion()
     {
         return $this->hasOne(Opinion::class);
-    }
-    public function package()
-    {
-        return $this->belongsTo(Package::class);
     }
 }

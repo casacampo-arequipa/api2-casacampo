@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('cottages', function (Blueprint $table) {
             $table->id();
             $table->string('name_cottage');
-            $table->string('description');
+            $table->longText('description');
             // $table->float('price');
             $table->integer('capacity');
             $table->boolean('availability');
