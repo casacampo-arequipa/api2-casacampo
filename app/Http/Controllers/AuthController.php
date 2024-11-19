@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    public function register()
+    public function register(Request $request)
     {
         $validator = Validator::make(request()->all(), [
             'name' => 'required',
@@ -20,12 +21,12 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
+        // Tomar todos los datos del Request y sobrescribir el password encriptado
+        $data = $request->all();
+        $data['password'] = bcrypt($request->password);
 
-        $user = new User;
-        $user->name = request()->name;
-        $user->email = request()->email;
-        $user->password = bcrypt(request()->password);
-        $user->save();
+        // Crear el usuario
+        $user = User::create($data);
 
         return response()->json($user, 201);
     }

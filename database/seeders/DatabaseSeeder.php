@@ -33,8 +33,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'luis@gmail.com',
             'lastname' => 'Vilca Hilasaca',
             'phone' => '993763334',
-            'country' => 'Perú',
-            'user' => 'luis',
+            // 'country' => 'Perú',
+            // 'user' => 'luis',
             'password' => bcrypt('12345678'),
             'rol_id' => '1',
         ]);

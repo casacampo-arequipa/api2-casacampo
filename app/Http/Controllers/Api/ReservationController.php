@@ -67,12 +67,16 @@ class ReservationController extends Controller
                 })
                     ->where('date_start', '<=', $request->date_end)
                     ->where('date_end', '>=', $request->date_start)
-                    ->exists();
+                    ->with('cottages') // Cargar la relación con las cabañas
+                    ->first(); // Obtener el primer conflicto si existe
 
                 if ($conflict) {
+                    // Obtener el nombre de la cabaña en conflicto
+                    $cottageName = $conflict->cottages->firstWhere('id', $cottage_id)->name_cottage;
+
                     // Rollback y respuesta de conflicto
                     return response()->json([
-                        'message' => "La cabaña con ID {$cottage_id} ya está reservada en las fechas seleccionadas. Por favor, elige otras fechas."
+                        'message' => "La cabaña '{$cottageName}' ya está reservada en las fechas seleccionadas. Por favor, elige otras fechas."
                     ], 409); // Código de estado HTTP 409: Conflicto
                 }
             }

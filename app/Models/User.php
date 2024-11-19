@@ -26,9 +26,13 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'name',
+        'lastname',
         'phone',
         'email',
+        'country',
         'password',
+        'profile_photo_path',
+        'rol_id'
     ];
 
     /**
@@ -84,7 +88,8 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Opinion::class); // Un usuario tiene muchos comentarios
     }
 
-    public function rol(){
+    public function rol()
+    {
         return $this->belongsTo(Rol::class); //cada usuario tiene un rol
     }
 }
