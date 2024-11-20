@@ -152,4 +152,15 @@ class ReservationController extends Controller
             return response()->json(['message' => 'Error al actualizar la reservación.'], 500);
         }
     }
+
+    public function destroy(int $id)
+    {
+        try {
+            $reservation = Reservation::findOrFail($id);
+            $reservation->cottages()->detach();
+            $reservation->delete();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
 }
