@@ -68,6 +68,7 @@ class AuthController extends Controller
                 'expires_in' => JWTAuth::factory()->getTTL() * 60,
             ],
             "user" => [
+                "id" => auth('api')->user()->id,
                 "name" => auth('api')->user()->name,
                 "lastname" => auth('api')->user()->lastname,
                 "role" => auth('api')->user()->rol->name_rol ?? 'Rol no asignado',
