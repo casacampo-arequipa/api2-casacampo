@@ -34,11 +34,12 @@ Route::group([
     //api cabañas
     Route::get('/cottage', [CottageController::class, "index"]);
     //api descuentos
-    Route::resource('/discount', DiscountController::class);
+    // Route::resource('/discount', DiscountController::class);
     //api promociones
-    Route::resource('/promotion', PromotionController::class);
+    // Route::resource('/promotion', PromotionController::class);
     //api reservaciones
-    Route::resource('/reservation', ReservationController::class);
+    Route::get('/reservation', [ReservationController::class,  "index"]);
+    Route::post('/reservation', [ReservationController::class,  "store"]);
     //api reservaciones
     Route::resource('/opinion', OpinionController::class);
 
