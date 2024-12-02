@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name_promotion');
             $table->integer('percentage');
-            $table->text('description');
             $table->dateTime('date_start');
             $table->dateTime('date_end');
             $table->boolean('state'); // 0 -> des-activo ; 1 -> activo

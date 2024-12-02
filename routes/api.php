@@ -35,8 +35,9 @@ Route::group([
     Route::get('/cottage', [CottageController::class, "index"]);
     //api descuentos
     // Route::resource('/discount', DiscountController::class);
+    Route::get('/apply_promotion',[PromotionController::class, "apply_promotion"]);
     //api promociones
-    // Route::resource('/promotion', PromotionController::class);
+    Route::resource('/promotion', PromotionController::class);
     //api reservaciones
     Route::get('/reservation', [ReservationController::class,  "index"]);
     Route::post('/reservation', [ReservationController::class,  "store"]);

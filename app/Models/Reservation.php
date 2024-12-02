@@ -47,13 +47,6 @@ class Reservation extends Model
     {
         return $this->belongsToMany(Cottage::class, 'cottage_reservation');
     }
-
-    // Relación con el descuento
-    public function discount()
-    {
-        return $this->belongsTo(Discount::class);  // Una reserva puede tener un descuento
-    }
-
     // Relación con la promoción
     public function promotion()
     {

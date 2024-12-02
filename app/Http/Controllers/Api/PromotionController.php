@@ -11,7 +11,7 @@ class PromotionController extends Controller
 {
     public function index()
     {
-        $promotions = Promotion::paginate(5);
+        $promotions = Promotion::all();
         return response()->json(['promotions' => $promotions], 200);
     }
 
@@ -21,7 +21,6 @@ class PromotionController extends Controller
         $validator = Validator::make(request()->all(), [
             'name_promotion' => 'required',
             'percentage' => 'required',
-            'description' => 'required',
             'date_start' => 'required',
             'date_end' => 'required',
             'state' => 'required'
@@ -36,6 +35,21 @@ class PromotionController extends Controller
         return response()->json(["promotion" => $promotion],  200);
     }
 
+
+    public function apply_promotion(Request $request)
+    {
+        $promotion = Promotion::where("name_promotion", $request->name_promotion)->where("state", 1)->where('date_start', '<=', now())
+            ->where('date_end', '>=', now())->first();
+        if (!$promotion) {
+            return response()->json(["message" => 403, "message_text" => "LA PROMOCIÓN INGRESADO NO EXISTE"]);
+        }
+        return response()->json([
+            "message" => 200,
+            "PROMO" => $promotion,
+            "message_text" => "LA PROMOCIÓN ES VÁLIDA"
+        ]);
+    }
+
     public function update(Request $request, int $id)
     {
         $promotion = Promotion::findOrFail($id);
@@ -43,7 +57,6 @@ class PromotionController extends Controller
         $validator = Validator::make(request()->all(), [
             'name_promotion' => 'required',
             'percentage' => 'required',
-            'description' => 'required',
             'date_start' => 'required',
             'date_end' => 'required',
             'state' => 'required'
