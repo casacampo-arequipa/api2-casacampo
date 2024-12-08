@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CottageController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DiscountController;
 use App\Http\Controllers\Api\OpinionController;
 use App\Http\Controllers\Api\PackegeController;
@@ -43,7 +44,7 @@ Route::group([
     Route::post('/reservation', [ReservationController::class,  "store"]);
     //api reservaciones
     Route::resource('/opinion', OpinionController::class);
-
+    Route::get('/dashboard', [DashboardController::class,  "infoDashboard"]);
     Route::get('/packages', [PackegeController::class, "index"]);
 });
 Route::group([
