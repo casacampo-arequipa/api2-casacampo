@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\PromotionController;
 use App\Http\Controllers\Api\ReservationController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,17 +35,15 @@ Route::group([
 ], function ($router) {
     //api cabañas
     Route::get('/cottage', [CottageController::class, "index"]);
-    //api descuentos
-    // Route::resource('/discount', DiscountController::class);
-    Route::get('/apply_promotion',[PromotionController::class, "apply_promotion"]);
-    //api promociones
-    Route::resource('/promotion', PromotionController::class);
-    //api reservaciones
+    //aplicar promociones
+    Route::get('/apply_promotion', [PromotionController::class, "apply_promotion"]);
+    //api lista reservaciones
     Route::get('/reservation', [ReservationController::class,  "index"]);
+    //api crear reservaciones
     Route::post('/reservation', [ReservationController::class,  "store"]);
-    //api reservaciones
+    //api opinion
     Route::resource('/opinion', OpinionController::class);
-    Route::get('/dashboard', [DashboardController::class,  "infoDashboard"]);
+    //api lista paquetes
     Route::get('/packages', [PackegeController::class, "index"]);
 });
 Route::group([
@@ -57,12 +56,7 @@ Route::group([
     Route::resource('/reservation-admin', ReservationController::class);
     Route::resource('/packages-admin', PackegeController::class);
     Route::post('/packages-admin/{id}', [PackegeController::class, "update"]);
-    //api descuentos
-    //  Route::resource('/discount', DiscountController::class);
-    //  //api promociones
-    //  Route::resource('/promotion', PromotionController::class);
-    // //api reservaciones
-    // Route::resource('/reservation', ReservationController::class);
-    //  //api reservaciones
-    //  Route::resource('/opinion', OpinionController::class);
-});
+    //api promociones
+    Route::resource('/promotion-admin', PromotionController::class);
+    Route::get('/dashboard', [DashboardController::class,  "infoDashboard"]);
+})->withoutMiddleware([RoleMiddleware::class]);;
