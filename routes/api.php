@@ -46,8 +46,9 @@ Route::group([
     //api lista paquetes
     Route::get('/packages', [PackegeController::class, "index"]);
 });
+
 Route::group([
-    'middleware' => ['api', 'auth:api']
+    'middleware' => ['api', 'auth:api', 'role']
 ], function ($router) {
     //api cabañas
     Route::resource('/cottage-admin', CottageController::class);
@@ -59,4 +60,4 @@ Route::group([
     //api promociones
     Route::resource('/promotion-admin', PromotionController::class);
     Route::get('/dashboard', [DashboardController::class,  "infoDashboard"]);
-})->withoutMiddleware([RoleMiddleware::class]);;
+});
