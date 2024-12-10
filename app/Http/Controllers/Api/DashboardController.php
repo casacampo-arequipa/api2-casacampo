@@ -40,9 +40,16 @@ class DashboardController extends Controller
         $paqueteConMasReservas = $package->mapWithKeys(function ($package) {
             return [$package->name => $package->reservations_count];
         })->toArray();
-        $ultimasReservas = Reservation::orderBy('date_reservation', 'desc')
+
+        $ultimasReservas = Reservation::with('package:id,name', 'user:id,name,lastname')->orderBy('date_reservation', 'desc')
             ->take(5)  // Limita a las 5 reservas más recientes
-            ->get();
+            ->get()
+            ->map(function ($reservation) {
+                // Agregar el mensaje basado en el estado
+                $reservation->payment_status = $reservation->state == 1 ? 'Pagado' : ($reservation->state == 0 ? 'Falta pagar' : 'Estado desconocido');
+                return $reservation;
+            });
+        
         $userConMasReservas = User::withCount('reservations')
             ->orderByDesc('reservations_count')
             ->take(5)  // Limita a los 5 usuarios con más reservas
