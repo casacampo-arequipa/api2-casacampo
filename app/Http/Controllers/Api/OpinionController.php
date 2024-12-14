@@ -12,7 +12,7 @@ class OpinionController extends Controller
 {
     public function index()
     {
-        $opinions = Opinion::paginate(5);
+        $opinions = Opinion::with(['user:id,name,lastname'])->get();
         return response()->json(['opinions' => $opinions], 200);
     }
 
@@ -20,7 +20,6 @@ class OpinionController extends Controller
     {
 
         $validator = Validator::make(request()->all(), [
-            'calification' => 'required',
             'date' => 'required',
             'coment' => 'required',
             'reservation_id' => 'required|exists:reservations,id',
@@ -31,7 +30,7 @@ class OpinionController extends Controller
             return response()->json($validator->errors()->toJson(), 400);
         }
 
-        $reservation = Reservation::where('id', $request->reservation_id)->where('user_id', $request->user_id)->first();;
+        $reservation = Reservation::where('id', $request->reservation_id)->where('user_id', $request->user_id)->first();
 
         if (!$reservation) {
             return response()->json(['error' => 'Este usuario no realizó esta reservación.'], 403);
@@ -57,7 +56,7 @@ class OpinionController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
-        
+
         $reservation = Reservation::where('id', $request->reservation_id)->where('user_id', $request->user_id)->first();
 
         if (!$reservation) {

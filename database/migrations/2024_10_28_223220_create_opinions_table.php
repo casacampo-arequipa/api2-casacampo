@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('opinions', function (Blueprint $table) {
             $table->id();
-            $table->integer('calification');
             $table->dateTime('date');
             $table->longText('coment');
             $table->unsignedBigInteger('reservation_id')->nullable();

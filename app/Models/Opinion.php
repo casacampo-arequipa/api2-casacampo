@@ -9,7 +9,7 @@ class Opinion extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'calification',
+        // 'calification',
         'date',
         'coment',
         'reservation_id',

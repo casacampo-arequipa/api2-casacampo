@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -44,7 +45,26 @@ class AuthController extends Controller
 
     public function me()
     {
-        return response()->json(auth('api')->user());
+        $user = auth('api')->user();
+        $userInfo = [
+            "name" => $user->name,
+            "lastname" => $user->lastname,
+            "phone" => $user->phone,
+            "email" => $user->email,
+            "country" => $user->country,
+            "reservations" => $user->reservations->map(function ($reservation) {
+                return [
+                    "date_start" => $reservation->date_start,
+                    "date_end" => $reservation->date_end,
+                    "total_price" => $reservation->total_price,
+                    "date_reservation" => $reservation->date_reservation,
+                    "state" => $reservation->state,
+                ];
+            }),
+        ];
+        $numReservations = $user->reservations->count();
+        $numOpinion = $user->opinions->count();
+        return response()->json(["me" => $userInfo, "numres" => $numReservations, "numopinion" => $numOpinion]);
     }
 
     public function logout()
