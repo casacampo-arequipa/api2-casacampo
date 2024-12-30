@@ -38,7 +38,6 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('12345678'),
             'rol_id' => '1',
         ]);
-        Discount::factory(10)->create();
         Promotion::factory(5)->create();
         Package::factory(4)->create();
         // $reservations = [

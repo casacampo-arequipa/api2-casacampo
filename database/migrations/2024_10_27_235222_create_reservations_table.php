@@ -19,10 +19,8 @@ return new class extends Migration
             $table->boolean('state'); //is_confirmed
             $table->dateTime('date_reservation');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('discount_id')->nullable();
             $table->unsignedBigInteger('promotion_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('discount_id')->references('id')->on('discounts')->onDelete('cascade');
             $table->foreign('promotion_id')->references('id')->on('promotions')->onDelete('cascade');
             $table->unsignedBigInteger('package_id');
             $table->foreign('package_id')->references('id')->on('packages')->onDelete('cascade');
