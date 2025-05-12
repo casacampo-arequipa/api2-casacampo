@@ -26,8 +26,24 @@ class DatabaseSeeder extends Seeder
         Rol::factory()->create([
             'name_rol' => 'Usuario',
         ]);
-        User::factory(4)->create();
-        Cottage::factory(2)->create();
+        Cottage::factory()->create([
+            'name_cottage' => 'Cabaña Coaba',
+            'description' => 'La cabaña Coaba esta ubicado en el corazón de Arequipa, nuestra casa de campo ofrece mucho más que comodidad: es un espacio donde se siente la tranquilidad, la calma y la alegría de estar vivo. Con piscina privada, cuatrimotor para aventuras inolvidables y todos los servicios necesarios para una estadía perfecta, aquí cada momento invita a reconectar contigo mismo y con quienes amas. Más que un destino, es una experiencia de paz y bienestar que se guarda en el alma.',
+            'capacity' => 12,
+            'availability' => true,
+            'rooms' => 12,
+            'beds' => 12,
+            'bathrooms' => 12,
+        ]);
+        Cottage::factory()->create([
+            'name_cottage' => 'Cabaña Perkinson',
+            'description' => 'La cabaña Coaba esta ubicado en el corazón de Arequipa, nuestra casa de campo ofrece mucho más que comodidad: es un espacio donde se siente la tranquilidad, la calma y la alegría de estar vivo. Con piscina privada, cuatrimotor para aventuras inolvidables y todos los servicios necesarios para una estadía perfecta, aquí cada momento invita a reconectar contigo mismo y con quienes amas. Más que un destino, es una experiencia de paz y bienestar que se guarda en el alma.',
+            'capacity' => 12,
+            'availability' => true,
+            'rooms' => 12,
+            'beds' => 12,
+            'bathrooms' => 12,
+        ]);
         User::factory()->create([
             'name' => 'Luis Martin',
             'email' => 'luis@gmail.com',

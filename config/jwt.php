@@ -250,7 +250,7 @@ return [
     |
     */
 
-    'decrypt_cookies' => false,
+    'decrypt_cookies' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -296,6 +296,15 @@ return [
 
         'storage' => Tymon\JWTAuth\Providers\Storage\Illuminate::class,
 
+    ],
+
+    'cookie' => [
+        'name' => 'token', // nombre de la cookie
+        'path' => '/',
+        'domain' => env('SESSION_DOMAIN', null), // puede ser null o tu dominio real
+        'secure' => env('APP_ENV') === 'production', // true en producción con HTTPS
+        'http_only' => true,
+        'same_site' => 'Strict', // o 'Lax' si usas subdominios
     ],
 
 ];

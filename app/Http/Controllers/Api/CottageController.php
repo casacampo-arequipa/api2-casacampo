@@ -29,8 +29,6 @@ class CottageController extends Controller
         } else {
             $cottages = Cottage::all();
         }
-
-        return response()->json(['cottages' => $cottages]);
     }
     public function index2(Request $request)
     {

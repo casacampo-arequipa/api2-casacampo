@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name_cottage');
             $table->longText('description');
+            $table->string('main_image')->nullable();      // imagen principal
+            $table->json('gallery_images')->nullable(); // multiples imagenes principal
             // $table->float('price');
             $table->integer('capacity');
             $table->boolean('availability');

@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -32,7 +34,18 @@ class AuthController extends Controller
         return response()->json($user, 201);
     }
 
-    public function login()
+    // public function login()
+    // {
+    //     $credentials = request(['email', 'password']);
+
+    //     if (! $token = auth('api')->attempt($credentials)) {
+    //         return response()->json(['error' => 'Unauthorized'], 401);
+    //     }
+
+    //     return $this->respondWithToken($token);
+    // } --- en stand by
+
+    public function logincookies()
     {
         $credentials = request(['email', 'password']);
 
@@ -40,8 +53,22 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+        // Crear cookie segura
+        $cookie = cookie(
+            name: 'token',
+            value: $token,
+            minutes: JWTAuth::factory()->getTTL(), // duración en minutos
+            path: '/',
+            domain: '127.0.0.1', // o tu dominio
+            secure: false, // true en producción con HTTPS
+            httpOnly: false,
+            raw: false,
+            sameSite: 'Lax'
+        );
+
+        return $this->respondWithToken($token)->cookie($cookie);
     }
+
 
     public function me()
     {
@@ -52,6 +79,10 @@ class AuthController extends Controller
             "phone" => $user->phone,
             "email" => $user->email,
             "country" => $user->country,
+            "role" => auth('api')->user()->rol->name_rol ?? 'Rol no asignado',
+            "profile_photo_path" => Str::contains($user->profile_photo_url, 'storage/')
+                ? $user->profile_photo_url
+                : $user->profile_photo_url,
             "reservations" => $user->reservations->map(function ($reservation) {
                 return [
                     "date_start" => $reservation->date_start,
@@ -70,8 +101,8 @@ class AuthController extends Controller
     public function logout()
     {
         auth('api')->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
+        $cookie = cookie()->forget('token');
+        return response()->json(['message' => 'Successfully logged out'])->cookie($cookie);
     }
 
     public function refresh()
@@ -82,18 +113,24 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         return response()->json([
-            'token' => [
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => JWTAuth::factory()->getTTL() * 60,
-            ],
             "user" => [
                 "id" => auth('api')->user()->id,
                 "name" => auth('api')->user()->name,
                 "lastname" => auth('api')->user()->lastname,
                 "role" => auth('api')->user()->rol->name_rol ?? 'Rol no asignado',
                 "email" => auth('api')->user()->email,
-                "pic" => auth('api')->user()->profile_photo_url
+                "profile_photo_path" => Str::contains(auth('api')->user()->profile_photo_url, 'storage/')
+                    ? auth('api')->user()->profile_photo_url
+                    : auth('api')->user()->profile_photo_url,
+                "reservations" =>  auth('api')->user()->reservations->map(function ($reservation) {
+                    return [
+                        "date_start" => $reservation->date_start,
+                        "date_end" => $reservation->date_end,
+                        "total_price" => $reservation->total_price,
+                        "date_reservation" => $reservation->date_reservation,
+                        "state" => $reservation->state,
+                    ];
+                }),
             ],
         ], 200, [], JSON_PRETTY_PRINT);
     }

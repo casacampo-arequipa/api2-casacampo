@@ -15,9 +15,13 @@ class Cottage extends Model
         'availability',
         'rooms',
         'beds',
-        'bathrooms'
+        'bathrooms',
+        'main_image',
+        'gallery_images',
     ];
-
+    protected $casts = [
+        'gallery_images' => 'array', // ✅ para usarlo como array en controladores/resources
+    ];
     public function packages()
     {
         return $this->belongsToMany(Package::class, 'cottage_packages');

@@ -10,23 +10,27 @@ use App\Http\Controllers\Api\PromotionController;
 use App\Http\Controllers\Api\ReservationController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Tienda\HomeController;
 use Illuminate\Support\Facades\Route;
 
+// Rutas de autentificacion
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('/register', [AuthController::class, 'register'])->name('register');
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
-    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api')->name('logout');
+    Route::post('/login', [AuthController::class, 'logincookies'])->name('logincookies');
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('cookie.token')->name('logout');
     Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api')->name('refresh');
-    Route::get('/me', [AuthController::class, 'me'])->middleware('auth:api')->name('me');
+    Route::get('/me', [AuthController::class, 'me'])->middleware('cookie.token')->name('me');
 });
 
+// Rutas para el publico
 Route::group([
-    // 'middleware' => ['api', 'auth:api']
     'middleware' => ['api']
 ], function ($router) {
+    //api inicio
+    Route::get('/home', [HomeController::class, "home"]);
     //api cabañas
     Route::get('/cottage', [CottageController::class, "index"]);
     //aplicar promociones
