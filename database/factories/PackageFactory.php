@@ -25,6 +25,7 @@ class PackageFactory extends Factory
             'price_monday_to_thursday' => fake()->randomFloat(2, 100, 2000),
             'price_friday_to_sunday' => fake()->randomFloat(2, 150, 2500),
             'img' => fake()->imageUrl(640, 480, 'cats', true),
+            'max_cottages_selectable' => fake()->numberBetween(1, 2),
             'guarantee' => fake()->randomFloat(2, 150, 500),
             'cleaning' => fake()->randomFloat(2, 150, 200),
         ];

@@ -43,6 +43,8 @@ Route::group([
 ], function ($router) {
     //api inicio
     Route::get('/home', [HomeController::class, "home"]);
+    //api searchhome
+    Route::post('/searchcottage', [HomeController::class, "search"]);
     //api cabañas
     Route::get('/cottage', [CottageController::class, "index"]);
     //aplicar promociones

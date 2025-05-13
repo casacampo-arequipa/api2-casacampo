@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('price_friday_to_sunday', 10, 2);
             $table->decimal('guarantee', 10, 2);
             $table->decimal('cleaning', 10, 2);
+            $table->integer('max_cottages_selectable')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });
