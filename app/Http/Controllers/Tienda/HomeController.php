@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Tienda\HomeCollection;
 use App\Models\Cottage;
 use App\Models\Package;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -35,18 +36,34 @@ class HomeController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
-
         if ($request->persons > 16) {
             return response()->json([
                 'message' => 'El total de personas (adultos + niños) no puede ser mayor a 16.'
             ], 422);
+        };
+
+        $existingReservation = Reservation::where(function ($query) use ($request) {
+            // Las fechas no se deben solapar
+            $query->whereBetween('date_start', [$request->check_in, $request->check_out])
+                ->orWhereBetween('date_end', [$request->check_in, $request->check_out])
+                ->orWhere(function ($query) use ($request) {
+                    // Verifica si la reserva está dentro del rango de las fechas solicitadas
+                    $query->where('date_start', '<=', $request->check_in)
+                        ->where('date_end', '>=', $request->check_out);
+                });
+        })->exists();
+
+        if ($existingReservation) {
+            return response()->json([
+                'message' => 'Las fechas seleccionadas ya están ocupadas.'
+            ], 409); // Conflict: 409 si las fechas están ocupadas
         }
-        $package = Package::whereBetween('max_person', [$request->persons, $request->persons + 2])
+
+        $package = Package::where('max_person', '=', $request->persons)
             ->orderBy('max_person', 'asc')
             ->with('cottages')
             ->first();
-
-        if ($package == 0) {
+        if ($package == null) {
             // Buscar el más cercano superior aunque esté fuera del margen
             $closest = Package::where('max_person', '>=', $request->persons)
                 ->orderBy('max_person', 'asc')
