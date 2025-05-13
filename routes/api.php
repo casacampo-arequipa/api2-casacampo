@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Tienda\HomeController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
 
 // Rutas de autentificacion
 Route::group([
@@ -25,6 +26,17 @@ Route::group([
     Route::get('/me', [AuthController::class, 'me'])->middleware('cookie.token')->name('me');
 });
 
+Route::middleware('web')->prefix('auth')->group(function () {
+    Route::get('/google-auth/redirect', function () {
+        return Socialite::driver('google')->redirect();
+    });
+
+    Route::get('/google-auth/callback', function () {
+        $user = Socialite::driver('google')->stateless->user();
+        dd($user);
+        // Procesa el usuario
+    });
+});
 // Rutas para el publico
 Route::group([
     'middleware' => ['api']
