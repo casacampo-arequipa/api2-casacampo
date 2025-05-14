@@ -14,9 +14,11 @@ class HomeController extends Controller
 {
     public function home()
     {
+        $dateReservation = Reservation::select('date_start', 'date_end')->get();
         $cottages = Cottage::all();
         return response()->json([
             'cottages' => new HomeCollection($cottages),
+            'datereserva' => $dateReservation
         ]);
     }
 
