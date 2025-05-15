@@ -89,8 +89,11 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        foreach ($reservations as $reservation) {
-            Reservation::create($reservation);
+        foreach ($reservations as $data) {
+            $reservation = Reservation::create($data);
+
+            // Simula la asignación aleatoria de cabañas para cada reserva
+            $reservation->cottages()->attach([rand(1, 2)]); // por ejemplo: asocia 1 cabaña aleatoria
         }
         // Opinion::factory(4)->create();
     }

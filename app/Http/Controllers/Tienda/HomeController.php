@@ -8,17 +8,18 @@ use App\Models\Cottage;
 use App\Models\Package;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
     public function home()
     {
-        $dateReservation = Reservation::select('date_start', 'date_end')->get();
+        // $dateReservation = Reservation::select('date_start', 'date_end')->get();
         $cottages = Cottage::all();
         return response()->json([
             'cottages' => new HomeCollection($cottages),
-            'datereserva' => $dateReservation
+            // 'datereserva' => $dateReservation
         ]);
     }
 
@@ -44,48 +45,70 @@ class HomeController extends Controller
             ], 422);
         };
 
-        $existingReservation = Reservation::where(function ($query) use ($request) {
-            // Las fechas no se deben solapar
+        $reservationIds = Reservation::where(function ($query) use ($request) {
             $query->whereBetween('date_start', [$request->check_in, $request->check_out])
                 ->orWhereBetween('date_end', [$request->check_in, $request->check_out])
                 ->orWhere(function ($query) use ($request) {
-                    // Verifica si la reserva está dentro del rango de las fechas solicitadas
                     $query->where('date_start', '<=', $request->check_in)
                         ->where('date_end', '>=', $request->check_out);
                 });
-        })->exists();
+        })->pluck('id');
 
-        if ($existingReservation) {
-            return response()->json([
-                'message' => 'Las fechas seleccionadas ya están ocupadas.'
-            ], 409); // Conflict: 409 si las fechas están ocupadas
-        }
 
-        $package = Package::where('max_person', '=', $request->persons)
-            ->orderBy('max_person', 'asc')
-            ->with('cottages')
+
+        $reservedCottageIds = DB::table('cottage_reservation')
+            ->whereIn('reservation_id', $reservationIds)
+            ->pluck('cottage_id');
+
+        $availableCottages = Cottage::whereNotIn('id', $reservedCottageIds)->get();
+        $availableCottageIds = $availableCottages->pluck('id')->toArray();
+
+        $packages = Package::where('max_person', '>=', $request->persons)
+            ->whereHas('cottages', function ($query) use ($availableCottageIds) {
+                $query->whereIn('cottages.id', $availableCottageIds);
+            })
+            ->with(['cottages' => function ($query) use ($availableCottageIds) {
+                $query->whereIn('cottages.id', $availableCottageIds);
+            }])
+            ->orderBy('max_person', 'asc') 
             ->first();
-        if ($package == null) {
-            // Buscar el más cercano superior aunque esté fuera del margen
-            $closest = Package::where('max_person', '>=', $request->persons)
-                ->orderBy('max_person', 'asc')
-                ->with('cottages')
-                ->first();
 
-            if ($closest) {
-                return response()->json([
-                    'message' => 'No hay un paquete exacto, pero este es el más cercano disponible.',
-                    'data' => $closest
-                ]);
-            }
+        // $validPackages = $packages->filter(function ($package) {
+        //     return $package->cottages->count() >= $package->max_cottages;
+        // });
 
-            return response()->json([
-                'message' => 'No se encontró ningún paquete disponible.'
-            ], 404);
-        }
+
+        // if ($existingReservation) {
+        //     return response()->json([
+        //         'message' => 'Las fechas seleccionadas ya están ocupadas.'
+        //     ], 409); // Conflict: 409 si las fechas están ocupadas
+        // }
+
+        // $package = Package::where('max_person', '=', $request->persons)
+        //     ->orderBy('max_person', 'asc')
+        //     ->with('cottages')
+        //     ->first();
+        // if ($package == null) {
+        //     // Buscar el más cercano superior aunque esté fuera del margen
+        //     $closest = Package::where('max_person', '>=', $request->persons)
+        //         ->orderBy('max_person', 'asc')
+        //         ->with('cottages')
+        //         ->first();
+
+        //     if ($closest) {
+        //         return response()->json([
+        //             'message' => 'No hay un paquete exacto, pero este es el más cercano disponible.',
+        //             'data' => $closest
+        //         ]);
+        //     }
+
+        //     return response()->json([
+        //         'message' => 'No se encontró ningún paquete disponible.'
+        //     ], 404);
+        // }
 
         return response()->json([
-            'data' => $package
+            'data' => $packages
         ]);
     }
 }
