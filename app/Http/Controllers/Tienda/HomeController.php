@@ -70,43 +70,9 @@ class HomeController extends Controller
             ->with(['cottages' => function ($query) use ($availableCottageIds) {
                 $query->whereIn('cottages.id', $availableCottageIds);
             }])
-            ->orderBy('max_person', 'asc') 
+            ->orderBy('max_person', 'asc')
             ->first();
-
-        // $validPackages = $packages->filter(function ($package) {
-        //     return $package->cottages->count() >= $package->max_cottages;
-        // });
-
-
-        // if ($existingReservation) {
-        //     return response()->json([
-        //         'message' => 'Las fechas seleccionadas ya están ocupadas.'
-        //     ], 409); // Conflict: 409 si las fechas están ocupadas
-        // }
-
-        // $package = Package::where('max_person', '=', $request->persons)
-        //     ->orderBy('max_person', 'asc')
-        //     ->with('cottages')
-        //     ->first();
-        // if ($package == null) {
-        //     // Buscar el más cercano superior aunque esté fuera del margen
-        //     $closest = Package::where('max_person', '>=', $request->persons)
-        //         ->orderBy('max_person', 'asc')
-        //         ->with('cottages')
-        //         ->first();
-
-        //     if ($closest) {
-        //         return response()->json([
-        //             'message' => 'No hay un paquete exacto, pero este es el más cercano disponible.',
-        //             'data' => $closest
-        //         ]);
-        //     }
-
-        //     return response()->json([
-        //         'message' => 'No se encontró ningún paquete disponible.'
-        //     ], 404);
-        // }
-
+            
         return response()->json([
             'data' => $packages
         ]);
