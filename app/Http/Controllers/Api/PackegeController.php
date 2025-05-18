@@ -14,6 +14,11 @@ class PackegeController extends Controller
     {
         $packeges = Package::all()->map(function ($package) {
             $package->img = env("APP_URL") . '/' . $package->img;
+            $package->cottages->map(function ($cottage) {
+                $cottage->full_name = "{$cottage->name_cottage} ({$cottage->capacity} personas)";
+                return $cottage;
+            });
+
             return $package;
         });
         return response()->json(['packeges' => $packeges], 200);
