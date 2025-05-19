@@ -72,7 +72,7 @@ class HomeController extends Controller
 
 
 
-        $suggestions = [];
+        $suggestions = "";
         $maxAttempts = 30;
 
         foreach ($packageIds as $packageId) {
@@ -80,7 +80,7 @@ class HomeController extends Controller
                 ->where('package_id', $packageId)
                 ->pluck('cottage_id');
 
-            for ($i = 1; $i <= $maxAttempts && count($suggestions) < 3; $i++) {
+            for ($i = 1; $i <= $maxAttempts && ($suggestions) < 3; $i++) {
                 $start = Carbon::parse($request->check_in)->addDays($i);
                 $end = $start->copy()->addDays($nights);
 
@@ -105,7 +105,7 @@ class HomeController extends Controller
                 if (count($available) > 0) {
                     $packageInfo = $allPackages[$packageId];
 
-                    $suggestions[] = [
+                    $suggestions = [
                         'package_name' => $packageInfo,
                         'start_date' => $start->toDateString(),
                         'end_date' => $end->toDateString(),
