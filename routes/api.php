@@ -3,7 +3,6 @@
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\CottageController;
 use App\Http\Controllers\Api\DashboardController;
-use App\Http\Controllers\Api\DiscountController;
 use App\Http\Controllers\Api\OpinionController;
 use App\Http\Controllers\Api\PackegeController;
 use App\Http\Controllers\Api\PromotionController;
@@ -26,18 +25,8 @@ Route::group([
     Route::get('/me', [AuthController::class, 'me'])->middleware('cookie.token')->name('me');
 });
 
-Route::middleware('web')->prefix('auth')->group(function () {
-    Route::get('/google-auth/redirect', function () {
-        return Socialite::driver('google')->redirect();
-    });
 
-    Route::get('/google-auth/callback', function () {
-        $user = Socialite::driver('google')->stateless->user();
-        dd($user);
-        // Procesa el usuario
-    });
-});
-// Rutas para el publico
+
 Route::group([
     'middleware' => ['api']
 ], function ($router) {
@@ -45,7 +34,7 @@ Route::group([
     Route::get('/home', [HomeController::class, "home"]);
     //api searchhome
     Route::post('/searchcottage', [HomeController::class, "search"]);
-    
+
     //api cabañas
     Route::get('/cottage', [CottageController::class, "index"]);
     //aplicar promociones
