@@ -1,18 +1,12 @@
 <?php
 
+use App\Http\Controllers\GoogleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Laravel\Socialite\Facades\Socialite;
 
-Route::get('/google-auth/redirect', function () {
-    return Socialite::driver('google')->redirect();
-});
-
-Route::get('/google-auth/callback', function () {
-    $user = Socialite::driver('google')->stateless()->user();
-    dd($user);
-});
+Route::get('/google-auth/redirect', [GoogleController::class, 'redirectToGoogle']);
+Route::get('/google-auth/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
