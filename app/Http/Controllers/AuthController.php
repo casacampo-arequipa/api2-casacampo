@@ -78,9 +78,7 @@ class AuthController extends Controller
             "email" => $user->email,
             "country" => $user->country,
             "role" => auth('api')->user()->rol->name_rol ?? 'Rol no asignado',
-            "profile_photo_path" => Str::contains($user->profile_photo_url, 'storage/')
-                ? $user->profile_photo_url
-                : $user->profile_photo_url,
+            "profile_photo_path" => $user->profile_photo_url,
             "reservations" => $user->reservations->map(function ($reservation) {
                 return [
                     "date_start" => $reservation->date_start,
@@ -101,6 +99,44 @@ class AuthController extends Controller
         auth('api')->logout();
         $cookie = cookie()->forget('token');
         return response()->json(['message' => 'Successfully logged out'])->cookie($cookie);
+    }
+
+    public function setCookieFromToken(Request $request)
+    {
+        $token = $request->input('token');
+
+        try {
+            $cookie = cookie(
+                name: 'token',
+                value: $token,
+                minutes: JWTAuth::factory()->getTTL(),
+                path: '/',
+                domain: null, // o tu dominio si estás en producción
+                secure: false, // true en producción con HTTPS
+                httpOnly: true,
+                sameSite: 'Lax'
+            );
+
+            return response()->json(['message' => 'Cookie set', "user" => [
+                "id" => auth('api')->user()->id,
+                "name" => auth('api')->user()->name,
+                "lastname" => auth('api')->user()->lastname,
+                "role" => auth('api')->user()->rol->name_rol ?? 'Rol no asignado',
+                "email" => auth('api')->user()->email,
+                "profile_photo_path" => auth('api')->user()->profile_photo_path,
+                "reservations" =>  auth('api')->user()->reservations->map(function ($reservation) {
+                    return [
+                        "date_start" => $reservation->date_start,
+                        "date_end" => $reservation->date_end,
+                        "total_price" => $reservation->total_price,
+                        "date_reservation" => $reservation->date_reservation,
+                        "state" => $reservation->state,
+                    ];
+                }),
+            ],])->cookie($cookie);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Token inválido'], 401);
+        }
     }
 
     public function refresh()

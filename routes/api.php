@@ -20,9 +20,10 @@ Route::group([
 ], function ($router) {
     Route::post('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/login', [AuthController::class, 'logincookies'])->name('logincookies');
+    Route::post('/set-cookie', [AuthController::class, 'setCookieFromToken']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('cookie.token')->name('logout');
     Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api')->name('refresh');
-    Route::get('/me', [AuthController::class, 'me'])->middleware('jwt.cookie', 'cookie.token')->name('me');
+    Route::get('/me', [AuthController::class, 'me'])->middleware('cookie.token')->name('me');
 });
 
 

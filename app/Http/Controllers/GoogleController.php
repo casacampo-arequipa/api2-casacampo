@@ -35,9 +35,6 @@ class GoogleController extends Controller
             ]
         );
 
-        Auth::login($user); // Laravel inicia sesión y crea la cookie
-        // Autenticación con JWT
-
         $token = JWTAuth::fromUser($user);
 
         // Crear cookie JWT
@@ -53,32 +50,6 @@ class GoogleController extends Controller
             sameSite: 'Lax'
         );
         // Redirigir al frontend con cookie
-        return redirect('http://127.0.0.1:5173')->withCookie($cookie);
+        return redirect("http://127.0.0.1:5173?token={$token}")->withCookie($cookie);
     }
-
-    // protected function respondWithToken($token)
-    // {
-
-    //     return redirect('http://127.0.0.1:5173')->response()->json([
-    //         "user" => [
-    //             "id" => auth('api')->user()->id,
-    //             "name" => auth('api')->user()->name,
-    //             "lastname" => auth('api')->user()->lastname,
-    //             "role" => auth('api')->user()->rol->name_rol ?? 'Rol no asignado',
-    //             "email" => auth('api')->user()->email,
-    //             "profile_photo_path" => Str::contains(auth('api')->user()->profile_photo_url, 'storage/')
-    //                 ? auth('api')->user()->profile_photo_url
-    //                 : auth('api')->user()->profile_photo_url,
-    //             "reservations" =>  auth('api')->user()->reservations->map(function ($reservation) {
-    //                 return [
-    //                     "date_start" => $reservation->date_start,
-    //                     "date_end" => $reservation->date_end,
-    //                     "total_price" => $reservation->total_price,
-    //                     "date_reservation" => $reservation->date_reservation,
-    //                     "state" => $reservation->state,
-    //                 ];
-    //             }),
-    //         ],
-    //     ], 200, [], JSON_PRETTY_PRINT)->cookie($cookie); // Redirige al frontend
-    // }
 }
