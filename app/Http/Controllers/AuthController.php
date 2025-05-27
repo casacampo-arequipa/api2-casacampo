@@ -78,7 +78,9 @@ class AuthController extends Controller
             "email" => $user->email,
             "country" => $user->country,
             "role" => auth('api')->user()->rol->name_rol ?? 'Rol no asignado',
-            "profile_photo_path" => $user->profile_photo_url,
+            "profile_photo_path" => Str::contains(auth('api')->user()->profile_photo_path, 'storage/')
+                ? auth('api')->user()->profile_photo_url
+                : auth('api')->user()->profile_photo_path,
             "reservations" => $user->reservations->map(function ($reservation) {
                 return [
                     "date_start" => $reservation->date_start,
