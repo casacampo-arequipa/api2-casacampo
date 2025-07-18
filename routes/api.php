@@ -36,30 +36,30 @@ Route::group([
     //api searchhome
     Route::post('/searchcottage', [HomeController::class, "search"]);
 
-    //api cabañas
-    Route::get('/cottage', [CottageController::class, "index"]);
-    //aplicar promociones
-    Route::get('/apply_promotion', [PromotionController::class, "apply_promotion"]);
-    //api lista reservaciones
-    Route::get('/reservation', [ReservationController::class,  "index"]);
-    //api crear reservaciones
-    Route::post('/reservation', [ReservationController::class,  "store"]);
-    //api opinion
-    Route::resource('/opinion', OpinionController::class);
-    //api opinion
-    Route::resource('/contact', ContactController::class);
-    //api lista paquetes
-    Route::get('/packages', [PackegeController::class, "index"]);
+    // //api cabañas
+    // Route::get('/cottage', [CottageController::class, "index"]);
+    // //aplicar promociones
+    // Route::get('/apply_promotion', [PromotionController::class, "apply_promotion"]);
+    // //api lista reservaciones
+    // Route::get('/reservation', [ReservationController::class,  "index"]);
+    // //api crear reservaciones
+    // Route::post('/reservation', [ReservationController::class,  "store"]);
+    // //api opinion
+    // Route::resource('/opinion', OpinionController::class);
+    // //api opinion
+    // Route::resource('/contact', ContactController::class);
+    // //api lista paquetes
+    // Route::get('/packages', [PackegeController::class, "index"]);
 });
 
 Route::group([
-    'middleware' => ['api', 'auth:api', 'role']
+    'middleware' => ['api']
 ], function ($router) {
     //api cabañas
-    Route::resource('/cottage-admin', CottageController::class);
+    Route::resource('/cottage-admin', CottageController::class)->middleware('cookie.token');
     Route::resource('/users-admin', UserController::class);
     Route::get('/reservation-admin/helps', [ReservationController::class, 'helps']);
-    Route::resource('/reservation-admin', ReservationController::class);
+    Route::resource('/reservation-admin', ReservationController::class)->middleware('cookie.token');
     Route::resource('/packages-admin', PackegeController::class);
     Route::post('/packages-admin/{id}', [PackegeController::class, "update"]);
     //api promociones
